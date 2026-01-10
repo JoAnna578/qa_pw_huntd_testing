@@ -1,0 +1,22 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [main, task_solution]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build and Run Tests in Docker
+        run: |
+          docker build -t huntd-tests .
+          docker run --rm huntd-tests
