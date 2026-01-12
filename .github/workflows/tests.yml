@@ -10,13 +10,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Build and Run Tests in Docker
+      - name: Build Docker image
+        run: docker build -t huntd-tests .
+
+      - name: Run tests in container
         run: |
-          docker build -t huntd-tests .
-          docker run --rm huntd-tests
+          docker run --name huntd-container huntd-tests
+          docker cp huntd-container:/app/allure-results ./allure-results
+          docker rm huntd-container
+
+      - name: Generate Allure report
+        run: |
+          npm install -g allure-commandline
+          allure generate allure-results -o allure-report --clean
+
+      - name: Upload Allure report
+        uses: actions/upload-artifact@v3
+        with:
+          name: allure-report
+          path: allure-report
