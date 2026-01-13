@@ -1,16 +1,17 @@
-# Używamy oficjalnego obrazu Playwright z preinstalowanymi przeglądarkami
-FROM mcr.microsoft.com/playwright:v1.57.0-jammy
+# Oficjalny obraz Playwright z przeglądarkami
+FROM mcr.microsoft.com/playwright:v1.41.2-jammy
 
 WORKDIR /app
 
-# Kopiujemy cały projekt do kontenera
+# Kopiujemy tylko pliki zależności
+COPY package.json package-lock.json ./
+
+# Instalacja zależności (wymagane w CI)
+RUN npm ci
+
+# Kopiujemy resztę projektu
 COPY . .
 
-# Instalacja zależności Node.js
-RUN npm install
-
-# Instalacja przeglądarek
-RUN npx playwright install --with-deps
-
-# Domyślna komenda do uruchomienia testów
+# Uruchomienie testów
 CMD ["npx", "playwright", "test"]
+

@@ -1,4 +1,4 @@
-import { Locator } from "@playwright/test";
+import { Page, Locator } from "@playwright/test";
 import { BasePage } from "../base/BasePage";
 
 /**
@@ -10,29 +10,28 @@ export class LoginPage extends BasePage {
   private passwordInput: Locator;
   private loginButton: Locator;
 
-  constructor(page: any) {
+  constructor(page: Page) {
     super(page);
-    // Definiujemy selektory elementów na stronie logowania
-    this.usernameInput = this.page.locator("#username");
-    this.passwordInput = this.page.locator("#password");
-    this.loginButton = this.page.locator("#login-button");
+
+    // Selectors for login page elements
+    this.usernameInput = page.locator("#username");
+    this.passwordInput = page.locator("#password");
+    this.loginButton = page.locator("#login-button");
   }
 
   /**
    * Log in using provided credentials
-   * @param username string
-   * @param password string
    */
-  async login(username: string, password: string) {
+  async login(username: string, password: string): Promise<void> {
     await this.fillField(this.usernameInput, username);
     await this.fillField(this.passwordInput, password);
     await this.clickElement(this.loginButton);
   }
 
   /**
-   * Optional helper method to check if login was successful
+   * Helper method to verify successful login
    */
   async isLoggedIn(): Promise<boolean> {
-    return await this.page.locator("#logout-button").isVisible();
+    return this.page.locator("#logout-button").isVisible();
   }
 }

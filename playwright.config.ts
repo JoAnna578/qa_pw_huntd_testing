@@ -26,16 +26,10 @@ export default defineConfig({
   ],
 
   use: {
-    // headless domyślnie
+    baseURL: process.env.BASE_URL || "https://huntd-app-url.com",
     headless: true,
-
-    // Screenshot tylko przy niepowodzeniu
     screenshot: "only-on-failure",
-
-    // Video tylko przy niepowodzeniu
     video: "retain-on-failure",
-
-    // Trace na pierwszym retry
     trace: "on-first-retry",
   },
 
@@ -52,6 +46,14 @@ export default defineConfig({
     {
       name: "webkit",
       use: { ...devices["Desktop Safari"] },
+    },
+    {
+      name: "mobile-chrome",
+      use: { ...devices["Pixel 5"] },
+    },
+    {
+      name: "mobile-safari",
+      use: { ...devices["iPhone 13"] },
     },
   ],
 
